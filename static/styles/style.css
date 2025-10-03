@@ -1,0 +1,78 @@
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+    border: none;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+
+/* For phones */
+@media (max-width: 480px) {
+  .device-border {
+    margin: 0px;
+  }
+  :root {
+    --title-size: 16px;
+    --title-border: 2px;
+  }
+}
+
+
+/* For tabs */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .device-border {
+    margin: 0px;
+  }
+  :root {
+    --title-size: 24px;
+    --title-border: 3px;
+  }
+}
+
+/* For descktops */
+@media (min-width: 1025px) {
+  .device-border {
+    margin: 8px 40px;
+    border-radius: 10px;
+  }
+  :root {
+    --title-size: 32px;
+    --title-border: 4px;
+  }
+}
+
+.device-border {
+    border: 2px solid MediumSpringGreen;
+    box-shadow: 0 2px 6px rgba(0, 250, 154, 0.12),
+              0 2px 6px rgba(0, 250, 154, 0.24);
+    padding: 16px;
+}
+
+.page-title {
+    display: flex;
+    justify-content: center;
+}
+
+.title-text {
+    font-size: var(--title-size);
+    font-weight: bold;
+    border-bottom: var(--title-border) solid MediumSpringGreen;
+}
+
+.selecting-time {
+    display: flex;
+}
+
+select,
+::picker(select) {
+  outline: none;
+}
+
+select {
+    border-bottom: var(--title-border) solid MediumSpringGreen;
+    transition: 0.4s;
+}

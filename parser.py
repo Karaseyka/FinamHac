@@ -1,10 +1,10 @@
 import requests
 from urllib.parse import urlencode
 from typing import Union, List, Optional
+from dotenv import dotenv_values
 
-
-API_KEY = "P7A14KFI10YC9DAN" # УДАЛИТЬ ИЗ ОТКРЫТОГО ДОСТУПА
-
+config = dotenv_values(".env")
+API_KEY = config["API_KEY"]
 
 
 class UrlBuilder:
@@ -132,7 +132,7 @@ def simple_scraper(url):
 builder = UrlBuilder(api_key=API_KEY)
 
 # Пример 1: Простой запрос с тикерами
-url1 = builder.reset().add_tickers(["IBM", "AAPL"]).build()
+url1 = builder.build()
 print(url1)
 print("".join(simple_scraper(url1)))
 

@@ -26,8 +26,54 @@ def get_period_data():
     print(data)
     # data 1h or 24h or 1w ВОТ ПРЯМ ТАК КАК НАПИСАНО И передавать как в формате ниже
     return jsonify([
-        {'period': '1h'},
-        {'period': '24h'}
+        {'id': '1',
+         'headline': 'Курс рубля вырос',
+         'short_descr': 'По неопределенным обстоятельствам рубль стоит 10 евро',
+         'why_now': 'Актуально ДЛЯ ВСЕХ',
+         'sources': 'https://www.kommersant.ru/',
+         'hotness': '1',
+         'timeline': '14.88 04.10.2026'
+         },
+        {'id': '1',
+         'headline': 'Курс рубля вырос',
+         'short_descr': 'По неопределенным обстоятельствам рубль стоит 10 евро',
+         'why_now': 'Актуально ДЛЯ ВСЕХ',
+         'sources': 'https://www.kommersant.ru/',
+         'hotness': '1',
+         'timeline': '14.88 04.10.2026'
+         },
+        {'id': '1',
+         'headline': 'Курс рубля вырос',
+         'short_descr': 'По неопределенным обстоятельствам рубль стоит 10 евро',
+         'why_now': 'Актуально ДЛЯ ВСЕХ',
+         'sources': 'https://www.kommersant.ru/',
+         'hotness': '1',
+         'timeline': '14.88 04.10.2026'
+         },
+        {'id': '1',
+         'headline': 'Курс рубля вырос',
+         'short_descr': 'По неопределенным обстоятельствам рубль стоит 10 евро',
+         'why_now': 'Актуально ДЛЯ ВСЕХ',
+         'sources': 'https://www.kommersant.ru/',
+         'hotness': '1',
+         'timeline': '14.88 04.10.2026'
+         },
+        {'id': '1',
+         'headline': 'Курс рубля вырос',
+         'short_descr': 'По неопределенным обстоятельствам рубль стоит 10 евро',
+         'why_now': 'Актуально ДЛЯ ВСЕХ',
+         'sources': 'https://www.kommersant.ru/',
+         'hotness': '1',
+         'timeline': '14.88 04.10.2026'
+         },
+        {'id': '1',
+         'headline': 'Курс рубля вырос',
+         'short_descr': 'По неопределенным обстоятельствам рубль стоит 10 евро',
+         'why_now': 'Актуально ДЛЯ ВСЕХ',
+         'sources': 'https://www.kommersant.ru/',
+         'hotness': '1',
+         'timeline': '14.88 04.10.2026'
+         }
     ])
 
 

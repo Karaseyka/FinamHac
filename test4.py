@@ -2,6 +2,12 @@ import feedparser
 import pandas as pd
 from datetime import datetime
 import re
+from googletrans import Translator
+import time
+import logging
+
+# Настройка логирования
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Расширенный словарь RSS-источников с новыми специализированными сайтами
 feeds_dict = {
@@ -19,7 +25,6 @@ feeds_dict = {
     'CNBC': 'https://www.cnbc.com/id/100003114/device/rss/rss.html',
     'Forbes Business': 'https://www.forbes.com/business/feed/',
     'Business Insider': 'https://www.businessinsider.com/rss',
-
 
     # Российские финансовые СМИ
     'Ведомости - Финансы': 'https://www.vedomosti.ru/rss/rubric/finance',
@@ -124,10 +129,86 @@ STRICT_FINANCE_KEYWORDS = [
 ]
 
 
+class NewsTranslator:
+    def __init__(self):
+        self.translator = Translator()
+        self.translation_cache = {}
+
+    def needs_translation(self, text):
+        """Определяем, нужен ли перевод (проверяем наличие кириллицы)"""
+        if not text:
+            return False
+        # Если в тексте меньше 30% кириллицы, считаем что нужен перевод
+        cyrillic_count = sum(1 for char in text if '\u0400' <= char <= '\u04FF')
+        return cyrillic_count / len(text) < 0.3
+
+    def translate_text(self, text, max_retries=3):
+        """Перевод текста с кэшированием и повторными попытками"""
+        if not text or len(text.strip()) < 10:
+            return text
+
+        # Проверяем кэш
+        text_hash = hash(text)
+        if text_hash in self.translation_cache:
+            return self.translation_cache[text_hash]
+
+        for attempt in range(max_retries):
+            try:
+                translation = self.translator.translate(text, dest='ru', src='en')
+                translated_text = translation.text
+
+                # Сохраняем в кэш
+                self.translation_cache[text_hash] = translated_text
+
+                # Задержка чтобы избежать блокировки
+                time.sleep(0.1)
+
+                return translated_text
+
+            except Exception as e:
+                logging.warning(f"Ошибка перевода (попытка {attempt + 1}): {e}")
+                if attempt < max_retries - 1:
+                    time.sleep(1)
+                continue
+
+        # Если все попытки неудачны, возвращаем оригинальный текст
+        logging.error(f"Не удалось перевести текст после {max_retries} попыток")
+        return text
+
+
+# Создаем глобальный объект переводчика
+translator = NewsTranslator()
+
+
+def translate_news_item(news_item):
+    """Перевод заголовка и описания новости при необходимости"""
+    title = news_item['Заголовок']
+    description = news_item['Описание']
+
+    # Проверяем, нужен ли перевод для заголовка
+    if translator.needs_translation(title):
+        translated_title = translator.translate_text(title)
+        news_item['Заголовок'] = f"[ПЕРЕВОД] {translated_title}"
+        news_item['Оригинальный_заголовок'] = title
+    else:
+        news_item['Оригинальный_заголовок'] = title
+
+    # Проверяем, нужен ли перевод для описания
+    if translator.needs_translation(description):
+        translated_description = translator.translate_text(description)
+        news_item['Описание'] = translated_description
+        news_item['Оригинальное_описание'] = description
+    else:
+        news_item['Оригинальное_описание'] = description
+
+    news_item['Переведено'] = translator.needs_translation(title) or translator.needs_translation(description)
+
+    return news_item
+
+
 def contains_strict_finance_keywords(text):
     """Строгая проверка на финансовые/трейдинговые ключевые слова"""
     if not text:
-        print('no')
         return False
 
     text_lower = text.lower()
@@ -144,6 +225,7 @@ def parse_all_feeds(feeds_dict):
     """
     Парсит все RSS-ленты из словаря и возвращает DataFrame с новостями,
     отфильтрованными СТРОГО по финансовой и трейдинговой тематике
+    с автоматическим переводом иностранных статей
     """
     all_news = []
 
@@ -153,6 +235,9 @@ def parse_all_feeds(feeds_dict):
 
             # Парсим RSS-ленту
             feed = feedparser.parse(rss_url)
+
+            news_count = 0
+            translated_count = 0
 
             # Обрабатываем каждую новость в ленте
             for entry in feed.entries:
@@ -171,10 +256,20 @@ def parse_all_feeds(feeds_dict):
                         'Описание': description,
                         'Дата парсинга': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     }
+
+                    # Переводим новость если нужно
+                    news_item = translate_news_item(news_item)
+
+                    if news_item['Переведено']:
+                        translated_count += 1
+
                     all_news.append(news_item)
+                    news_count += 1
 
             current_source_count = len([n for n in all_news if n['Источник'] == source_name])
             print(f"   Найдено финансовых/трейдинговых новостей: {current_source_count}")
+            if translated_count > 0:
+                print(f"   Переведено новостей: {translated_count}")
 
         except Exception as e:
             print(f"Ошибка при парсинге {source_name}: {e}")
@@ -189,7 +284,16 @@ def save_news_with_timestamp(df):
     """Сохраняет DataFrame с временной меткой в имени файла"""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f'strict_financial_news_{timestamp}.csv'
-    df.to_csv(filename, index=False, encoding='utf-8-sig')
+
+    # Выбираем колонки для сохранения (включая новые колонки перевода)
+    columns_to_save = ['Источник', 'Заголовок', 'Ссылка', 'Дата публикации',
+                       'Описание', 'Дата парсинга', 'Переведено']
+
+    # Добавляем оригинальные колонки если они есть
+    if 'Оригинальный_заголовок' in df.columns:
+        columns_to_save.extend(['Оригинальный_заголовок', 'Оригинальное_описание'])
+
+    df.to_csv(filename, index=False, encoding='utf-8-sig', columns=columns_to_save)
     return filename
 
 
@@ -205,17 +309,31 @@ if __name__ == "__main__":
     # Сохраняем результат
     if len(news_df) > 0:
         filename = save_news_with_timestamp(news_df)
+
+        # Статистика по переводам
+        translated_count = len(news_df[news_df['Переведено'] == True]) if 'Переведено' in news_df.columns else 0
+
         print(f"\nПарсинг завершен! Собрано финансовых/трейдинговых новостей: {len(news_df)}")
+        print(f"Переведено иностранных новостей: {translated_count}")
         print(f"Результаты сохранены в файл: {filename}")
 
         # Показываем статистику по источникам
         print("\nСтатистика по источникам:")
         source_stats = news_df['Источник'].value_counts()
         for source, count in source_stats.items():
-            print(f"   {source}: {count} новостей")
+            translated_from_source = len(news_df[(news_df['Источник'] == source) & (
+                        news_df['Переведено'] == True)]) if 'Переведено' in news_df.columns else 0
+            print(f"   {source}: {count} новостей (переведено: {translated_from_source})")
 
         # Показываем первые 5 строк
         print("\nПервые 5 финансовых/трейдинговых новостей:")
-        print(news_df[['Источник', 'Заголовок']].head())
+        display_columns = ['Источник', 'Заголовок']
+        if 'Переведено' in news_df.columns:
+            display_columns.append('Переведено')
+        print(news_df[display_columns].head())
+
     else:
         print("\nНе найдено новостей по заданным строгим ключевым словам.")
+
+
+

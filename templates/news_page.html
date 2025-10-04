@@ -6,31 +6,27 @@
     <div class="upper-block">
         <button id="back-btn">Назад</button>
         <div class="page-title">
-            <p class="title-text">Новость: {{ids}}</p>
+            <p class="title-text">Новость: {{headline}}</p>
         </div>
     </div>
 
 
 
-    <div class="card">
-        <h3 class="headline">Курс рубля вырос</h3>
-        <p class="description">По неопределенным обстоятельствам рубль стоит 10
-            евро</p>
-        <p class="why-not">Актуально ДЛЯ ВСЕХ</p>
+    <div class="main-block">
+        <p class="description">{{description}}</p>
+        <p class="why-not">{{why_not}}</p>
         <div class="sources">
             <p>Сообщают: </p>
-            <a href="https://www.kommersant.ru/">Коммерсант</a>
+            <p>{{sources}}</p>
         </div>
         <div class="last-line">
             <div>
-                <p class="hotness">Оценка "горячести": 1</p>
-                <button class="standard-button" id="1">Перейти к новости
-                </button>
+                <p class="hotness">Оценка "горячести": {{hotness}}</p>
             </div>
 
             <div>
                 <p>Время публикации</p>
-                <p class="timeline">14.88 04.10.2026</p>
+                <p class="timeline">{{timeline}}</p>
             </div>
 
         </div>

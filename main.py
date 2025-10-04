@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
+# from LLM import get_news_info
 
 app = Flask(__name__)
 
@@ -11,7 +12,27 @@ def index():
 @app.route('/news_page/<ids>', methods=['GET'])
 def news_page(ids):
     # вот тут передается АДИ новости - по нему надо остальную инфу
-    return render_template('news_page.html', ids=ids)
+    data = {'id': '1',
+         'headline': 'Курс рубля вырос',
+         'short_descr': 'По неопределенным обстоятельствам рубль стоит 10 евро',
+         'why_now': 'Актуально ДЛЯ ВСЕХ',
+         'sources': 'https://www.kommersant.ru/',
+         'hotness': '1',
+         'timeline': '14.88 04.10.2026'
+         }
+    headline = data['headline']
+    description = data['short_descr']
+    why_not = data['why_now']
+    sources = data['sources']
+    hotness = data['hotness']
+    timeline = data['timeline']
+    return render_template('news_page.html', headline=headline,
+                           description=description,
+                           why_not=why_not,
+                           sources=sources,
+                           hotness=hotness,
+                           timeline=timeline
+    )
 
 
 @app.route('/get_news_id', methods=['POST'])
@@ -24,6 +45,8 @@ def get_news_id():
 def get_period_data():
     data = request.get_json()['period']
     print(data)
+    timelined_data = []
+
     # data 1h or 24h or 1w ВОТ ПРЯМ ТАК КАК НАПИСАНО И передавать как в формате ниже
     return jsonify([
         {'id': '1',

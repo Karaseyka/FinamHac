@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 let news_table = document.getElementById('news-container');
 let use_filter = document.getElementById('filter');
-let create_news = document.getElementById('create');
 const news_container = document.getElementById('news-container');
 
 use_filter.addEventListener('click', async function() {loadData();});
@@ -45,7 +44,7 @@ async function loadData() {
                         <p class="why-not">${why_now}</p>
                         <div class="sources">
                             <p>Сообщают: </p>
-                            <a href="${sources}">${sources}</a>
+                            <p>${sources}</p>
                         </div>
                         <div class="last-line">
                             <div>
@@ -69,9 +68,6 @@ async function loadData() {
     });
 }
 
-create_news.addEventListener('click', async function() {
-    window.location.href = '/create_news';
-})
 
 news_table.addEventListener('click', async function(event) {
     let id = event.target.id;

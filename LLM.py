@@ -48,8 +48,8 @@ FINANCIAL_ANALYSIS_PROMPT = """
   "hotness": число от 0.0 до 1.0,
   "why_now": "1-2 фразы почему важно сейчас",
   "entities": ["список", "компаний", "тикеров"],
-  "sources": ["основной источник"],
-  "timeline": ["Первое сообщение: описание"],
+  "sources": ["основной источник (если в новости есть ссылка, верни ссылку)"],
+  "timeline": ["Первое сообщение - дата],
   "draft": {
     "title": "Заголовок для черновика",
     "lead": "Лид-абзац",
@@ -147,4 +147,8 @@ def get_news_info(news_text):
         print(end - start)
         return js_res["choices"][0]["message"]["content"]
 
-# get_news_info("""Анонимный источник в Telegram сообщает о возможном дефолте компании 'Рога и копыта' по облигациям.""")
+a = get_news_info("""Wine from China is finer than Western snobs imagine
+                    https://www.economist.com/interactive/culture/2025/10/02/wine-from-china-is-finer-than-western-snobs-imagine
+                    Thu, 02 Oct 2025 09:34:54 +0000
+                    """)
+print(a)

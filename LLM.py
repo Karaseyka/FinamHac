@@ -6,7 +6,7 @@ import json
 config = dotenv_values(".env")
 KEY_1 = config["KEY_1"]
 KEY_2 = config["KEY_2"]
-MODEL = "openai/gpt-5"
+MODEL = "deepseek/deepseek-chat-v3.1:free"
 FINANCIAL_ANALYSIS_PROMPT = """
 Ты — AI-финансовый аналитик в режиме реального времени, работающий в сервисе приоритизации новостей. Твоя задача — всесторонне проанализировать финансовую новость, оценить ее потенциальное влияние и достоверность, а затем структурировать вывод в заданном формате, готовом для использования аналитиками.
 
@@ -28,7 +28,7 @@ FINANCIAL_ANALYSIS_PROMPT = """
         - **5-6 (Средний):** Региональные СМИ, официальные блоги компаний, пресс-релизы, малая вероятность такой новости 
         - **3-4 (Низкий):** Соцсети известных аналитиков, отраслевые блоги без прямой атрибуции
         - **1-2 (Очень низкий):** Анонимные источники, неподтвержденные слухи, фейковые аккаунты, невозможность или абсурдность новости
-    
+
     *   **Факторы подтверждений:**
         - **Множественные независимые подтверждения:** Новость подтверждена 2+ независимыми источниками
         - **Официальное подтверждение:** Есть официальный комментарий от компании/регулятора
@@ -66,6 +66,7 @@ FINANCIAL_ANALYSIS_PROMPT = """
 
 Проанализируй следующие новости:
 """
+
 
 def get_news_info(news_text):
     """ Передаётся максимально подробная инфа о новости или группе новостей
@@ -105,10 +106,10 @@ def get_news_info(news_text):
             })
         )
         js_res = response.json()
-        print(js_res)
+
         end = time.time()
-        print(end - start)
-        return js_res["choices"][0]["message"]["content"]
+
+        return js_res["choices"][0]["message"]["content"][7:-3]
     except Exception:
         response = requests.post(
             url="https://openrouter.ai/api/v1/chat/completions",
@@ -142,13 +143,14 @@ def get_news_info(news_text):
             })
         )
         js_res = response.json()
-        print(js_res)
+
         end = time.time()
-        print(end - start)
-        return js_res["choices"][0]["message"]["content"]
+
+        return js_res["choices"][0]["message"]["content"][7:-3]
+
 
 a = get_news_info("""Wine from China is finer than Western snobs imagine
                     https://www.economist.com/interactive/culture/2025/10/02/wine-from-china-is-finer-than-western-snobs-imagine
                     Thu, 02 Oct 2025 09:34:54 +0000
                     """)
-print(a)
+# print(json.loads(a[7:-3]))

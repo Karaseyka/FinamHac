@@ -3,9 +3,8 @@ from dotenv import dotenv_values
 import requests
 import json
 
-config = dotenv_values(".env")
-KEY_1 = config["KEY_1"]
-KEY_2 = config["KEY_2"]
+KEY_1 = "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"
+KEY_2 = "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"
 MODEL = "deepseek/deepseek-chat-v3.1:free"
 FINANCIAL_ANALYSIS_PROMPT = """
 Ты — AI-финансовый аналитик в режиме реального времени, работающий в сервисе приоритизации новостей. Твоя задача — всесторонне проанализировать финансовую новость, оценить ее потенциальное влияние и достоверность, а затем структурировать вывод в заданном формате, готовом для использования аналитиками.

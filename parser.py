@@ -16,10 +16,6 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 # Расширенный словарь RSS-источников с новыми специализированными сайтами
 feeds_dict = {
-    # Специализированные финансовые блоги и издания
-    'Финмаркет': 'https://www.finmarket.ru/news/',
-    # Основные финансовые СМИ
-    'Financial Times': 'https://www.ft.com/?format=rss',
     'Forbes Business': 'https://www.forbes.com/business/feed/',
     # Российские финансовые СМИ
     'Ведомости - Финансы': 'https://www.vedomosti.ru/rss/rubric/finance',

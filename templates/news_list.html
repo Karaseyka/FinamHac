@@ -10,8 +10,8 @@
         <div>
             <!--    Selecting news period-->
             <div class="selecting-time">
-                <h3>Просмотреть новости</h3>
-                <select>
+                <label for="selector">Просмотреть новости</label>
+                <select id="selector">
                     <option value="24h" selected>За последние 24 часа</option>
                     <option value="1h">За последний час</option>
                     <option value="1w">За эту неделю</option>
@@ -19,12 +19,12 @@
             </div>
 
 
-            <button>Применить фильтр</button>
+            <button id="filter">Применить фильтр</button>
         </div>
 
         <div>
             <!--    News creation-->
-            <button>Опубликовать свою новость</button>
+            <button id="create">Опубликовать свою новость</button>
         </div>
     </div>
     <div class="news-container" id="news-container">
@@ -39,7 +39,7 @@
             <div class="last-line">
                 <div>
                     <p class="hotness">Оценка "горячести": 1</p>
-                    <button id="1" class="standard-button">Перейти к новости</button>
+                    <button class="standard-button" id="1">Перейти к новости</button>
                 </div>
 
                 <div>
@@ -93,4 +93,5 @@
     </div>
 </div>
 <script src="../static/scripts/app.js"></script>
+
 {% endblock %}

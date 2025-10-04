@@ -1,5 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Одна новость</h1>
-<p>{{ids}}</p>
+
+
+<div class="device-border">
+    <div class="upper-block">
+        <button id="back-btn">Назад</button>
+        <div class="page-title">
+            <p class="title-text">Новость: {{ids}}</p>
+        </div>
+    </div>
+
+
+
+    <div class="card">
+        <h3 class="headline">Курс рубля вырос</h3>
+        <p class="description">По неопределенным обстоятельствам рубль стоит 10
+            евро</p>
+        <p class="why-not">Актуально ДЛЯ ВСЕХ</p>
+        <div class="sources">
+            <p>Сообщают: </p>
+            <a href="https://www.kommersant.ru/">Коммерсант</a>
+        </div>
+        <div class="last-line">
+            <div>
+                <p class="hotness">Оценка "горячести": 1</p>
+                <button class="standard-button" id="1">Перейти к новости
+                </button>
+            </div>
+
+            <div>
+                <p>Время публикации</p>
+                <p class="timeline">14.88 04.10.2026</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--<script src="../static/scripts/app.js"></script>-->
+<script>
+    let back_btn = document.getElementById('back-btn');
+
+    back_btn.addEventListener('click', async function() {
+        window.location.href = '/';
+    })
+</script>
 {% endblock %}
+

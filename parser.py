@@ -510,6 +510,7 @@ def parse_all_feeds(feeds_dict):
                     news_text = f"ЗАГОЛОВОК: {news_item['Заголовок']}\n\nОПИСАНИЕ: {news_item['Описание']}\n\nПОЛНЫЙ ТЕКСТ: {news_item['Полный_текст']}\n\nИСТОЧНИК: SmartLab"
                     ai_analysis_json = LLM.get_news_info(news_text)
 
+                    print(ai_analysis_json)
                     # Показываем переведенный текст, если он есть
                     display_text = news_item['Полный_текст']
                     if display_text and display_text != "Не удалось загрузить полный текст":
